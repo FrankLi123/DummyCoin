@@ -8,8 +8,8 @@ const { Test } = require('mocha');
 const Web3 = require('web3');
 const web3 = new Web3(ganache.provider());
 
-
 const {interface, bytecode} = require('../compile');
+
 
 
 
@@ -28,9 +28,24 @@ beforeEach( async ()=>{
 });
 
 describe('Inbox', ()=>{
+
     it('deploy contract', ()=>{
-        console.log(inbox);
+        // console.log(inbox);
     })
+
+    //write a test case to test default message.
+    it ('test the contract has a default message', async ()=>{
+        const message = await inbox.methods.message().call();
+        assert.equal(message, 'Hello!');
+    })
+
+    //write a test case to test changing the defualt message.
+    it('test we can change the mssage', async () =>{
+        await inbox.methods.setMessage('bye').send({ from : accounts[1]});
+        const message = await inbox.methods.message().call();
+        assert.equal(message, 'bye');
+    })
+
 })
 
 // class Car{
