@@ -16,10 +16,19 @@ contract Lottery{
         players.add(address);
     }
 
+    // function pickWinner() public{
+
+
+    // }
+
+
     function pickWinner() public{
 
+        require(msg.sender == manager);
 
+        uint index = random() % players.length;
+        players[index].trnasfer(this.balance);
+        players = new address[](0);
     }
-
 
 }
