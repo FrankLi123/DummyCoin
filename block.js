@@ -1,9 +1,11 @@
 
+const {GENESIS_DATA }  = require('./config');
+const cryptoHash = require('./crypto-hash');
+
 class Block{
 
 
     // * dont care aobut order of parameters with {   } , pass argument into constructor needs { } and variableName: 
-
     constructor( {timestamp, lastHash, hash, data } ){
 
         this.timestamp = timestamp;
@@ -11,6 +13,29 @@ class Block{
         this.hash = hash;
         this.data = data;
     }
+
+    // make the func be 'static'
+    static genesis() {
+        return new this(GENESIS_DATA);
+
+    }
+
+
+    static minedBlock({lastBlock, data}){
+
+        const timestamp = Date.now();
+        const lastHash = lastBlock.hash;
+
+        return new Block( {
+            timestamp: Date.now(),
+            lastHash: lastBlock.hash,
+            hash: cryptoHash(timestamp, lastHash, data)  ,
+            data: data
+        });
+
+    }
+
+
 }
 
 // be about to share with otehr files
@@ -18,31 +43,5 @@ module.exports = Block;
 
 
 
-const dummy = new Block ({timestamp: "01/01/2021", lastHash: "foo-lastHash",  hash: "foo-hash", data: 'food-data' } )
-
- console.log('block1', dummy )
-
-
- const Block = require('./block');
-
-describe('Block', () => {
-
-
-    const timestamp = 'foo-date';
-    const lastHash = 'foo-hash';
-
-    const hash = 'bar-hash';
-
-    const data = ['blockchain', 'data'];
-
-    const block = new Block({ timestamp, lastHash,hash, data });
-
-    it('has a timestamp, lastHash, hash, and data property' , ()=>{
-        expect(block.timestamp).toEqual(timestamp);
-        expect(block.lastHash).toEqual(lastHash);       
-        expect(block.hash).toEqual(hash);
-        expect(block.data).toEqual(data);
-    });
-});
 
 
