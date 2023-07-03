@@ -4,14 +4,13 @@ const {GENESIS_DATA }  = require('./config');
 
 const Block = require('./block');
 
-
+const cryptoHash = require('./crypto-hash');
 
 class blockchain{
 
     constructor(){
         this.chain = [];
         this.chain = [Block.genesis()];
-    
         this.len = 1;
     }
 
@@ -30,10 +29,13 @@ class blockchain{
     */
     static isValidChain( blockchain ){
 
+
+        // console.log( 1 + " " + JSON.stringify(blockchain[0]));
+        // console.log(2 + " "+  JSON.stringify(Block.genesis()));
         // check the data of the first block is correct
-        if(blockchain[0] != Block.genesis()){
-            return false;
-        }
+        if(  JSON.stringify(blockchain[0]) !== JSON.stringify(Block.genesis())  ){
+            return false
+        };
 
 
         //check if a lastHash reference of a block has been changed.
@@ -42,15 +44,25 @@ class blockchain{
 
         for(let i = 1 ; i  < blockchain.length; i++){
 
-                if(blockchain[i].lastHash != previousHash){
 
-                    return false;
-                }
-                previousHash = blockchain[i].hash;
+            previousHash = blockchain[i-1].hash;
+
+            if(blockchain[i].lastHash != previousHash){
+                return false;
+            };
+
+            const {timestamp, lastHash, hash, data} = blockchain[i];
+
+
+            let hashVal = cryptoHash(timestamp, lastHash, data);
+
+            if(hash != hashVal)    return false;
+            
+            
         }
     
 
-        
+
         return true;
     };
 
