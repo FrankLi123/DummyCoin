@@ -30,8 +30,6 @@ class blockchain{
     static isValidChain( blockchain ){
 
 
-        // console.log( 1 + " " + JSON.stringify(blockchain[0]));
-        // console.log(2 + " "+  JSON.stringify(Block.genesis()));
         // check the data of the first block is correct
         if(  JSON.stringify(blockchain[0]) !== JSON.stringify(Block.genesis())  ){
             return false
@@ -66,6 +64,30 @@ class blockchain{
         return true;
     };
 
+
+
+/* Function to check whether the current blockchain needs to be relaced by the input chain
+*/
+    replaceChain( chain ){
+
+        if(chain.length <= this.chain.length){
+
+            console.error('the incoming chain must be longer');
+            return;
+        }
+
+
+        if( blockchain.isValidChain(chain) == false ){
+            console.error("the incoming chain must be valid");
+            return;
+        }
+
+        this.chain = chain;
+
+    };
+
+
+    
 };
 
 
