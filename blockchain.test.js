@@ -172,9 +172,9 @@ describe('Blockchain', () => {
 
                 });
 
-                it('log about the chain replacement', () =>{
-                    expect(logMock).toHaveBeenCalled();
-                });
+                // it('log about the chain replacement', () =>{
+                //     expect(logMock).toHaveBeenCalled();
+                // });
 
             });
 

@@ -1,17 +1,19 @@
 
-const {GENESIS_DATA }  = require('./config');
+const {GENESIS_DATA, MINE_RATE }  = require('./config');
 const cryptoHash = require('./crypto-hash');
 
 class Block{
 
 
     // * dont care aobut order of parameters with {   } , pass argument into constructor needs { } and variableName: 
-    constructor( {timestamp, lastHash, hash, data } ){
+    constructor( {timestamp, lastHash, hash, data, nounce, difficulty } ){
 
         this.timestamp = timestamp;
         this.lastHash = lastHash;
         this.hash = hash;
         this.data = data;
+        this.nounce = nounce;
+        this.difficulty = difficulty;
     }
 
     // make the func be 'static'
@@ -23,19 +25,48 @@ class Block{
 
     static minedBlock({lastBlock, data}){
 
-        const timestamp = Date.now();
+        let hash, timestamp;
+        // const timestamp = Date.now();
         const lastHash = lastBlock.hash;
+        const { difficulty } = lastBlock;
+        let nounce = 0;
+
+
+        do {
+
+            nounce++;
+            timestamp = Date.now();
+            hash = cryptoHash(timestamp, lastHash, data, nounce, difficulty);
+
+        }while( hash.substring(0, difficulty) !== '0'.repeat(difficulty));
+
+
 
         return new Block( {
-            timestamp: Date.now(),
+            timestamp,
             lastHash: lastBlock.hash,
-            hash: cryptoHash(timestamp, lastHash, data)  ,
-            data: data
+            hash: hash,
+            data: data,
+            nounce,
+            difficulty,
         });
 
     }
 
 
+   /*
+    * originalBlock: the last block
+    * timetamp: the time of the current mined block
+    */
+    static adjustDifficulty({originalBlock, timestamp}){
+        const {difficulty} = originalBlock;
+        const difference  = timestamp - originalBlock.timestamp;
+        if(difference < MINE_RATE ){
+            return difficulty + 1;
+        }else{
+            return difficulty - 1;           
+        }
+    }
 }
 
 // be about to share with otehr files

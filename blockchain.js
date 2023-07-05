@@ -49,10 +49,10 @@ class blockchain{
                 return false;
             };
 
-            const {timestamp, lastHash, hash, data} = blockchain[i];
+            const {timestamp, lastHash, hash, data, nounce, difficulty} = blockchain[i];
 
 
-            let hashVal = cryptoHash(timestamp, lastHash, data);
+            let hashVal = cryptoHash(timestamp, lastHash, data, nounce, difficulty );
 
             if(hash != hashVal)    return false;
             
