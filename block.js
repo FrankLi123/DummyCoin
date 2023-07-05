@@ -1,5 +1,5 @@
 
-const {GENESIS_DATA }  = require('./config');
+const {GENESIS_DATA, MINE_RATE }  = require('./config');
 const cryptoHash = require('./crypto-hash');
 
 class Block{
@@ -54,6 +54,19 @@ class Block{
     }
 
 
+   /*
+    * originalBlock: the last block
+    * timetamp: the time of the current mined block
+    */
+    static adjustDifficulty({originalBlock, timestamp}){
+        const {difficulty} = originalBlock;
+        const difference  = timestamp - originalBlock.timestamp;
+        if(difference < MINE_RATE ){
+            return difficulty + 1;
+        }else{
+            return difficulty - 1;           
+        }
+    }
 }
 
 // be about to share with otehr files
