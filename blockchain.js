@@ -44,6 +44,7 @@ class blockchain{
 
 
             previousHash = blockchain[i-1].hash;
+            const lastDifficulty = blockchain[i-1].difficulty;
 
             if(blockchain[i].lastHash != previousHash){
                 return false;
@@ -56,7 +57,7 @@ class blockchain{
 
             if(hash != hashVal)    return false;
             
-            
+            if( Math.abs(lastDifficulty - difficulty) > 1 ){return false;}
         }
     
 
