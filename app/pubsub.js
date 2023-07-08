@@ -26,13 +26,25 @@ class PubSub{
         this.subscribeToChannels();
 
 
-        //trigger the event
-
+        //Set up the Event Handler
         this.subscriber.on('message',  (channel, message) => this.handleMessage(channel, message));
     }
 
+
+    // When subscribed source publish something
     handleMessage(channel, message){
+
         console.log(`Message receive. Channel : ${channel}. Message: ${message}.`);
+
+
+        const parsedMessage = JSON.parse(message);
+
+        // If receive a Blockchain message, then replace the chain if needed.
+        if( channel === CHANNELS.BLOCKCHAIN){
+            this.blockchain.replaceChain(parsedMessage);
+        }
+
+
     }
 
     subscribeToChannels(){
@@ -41,23 +53,28 @@ class PubSub{
         });
     }
 
-
+    // non consequential messages to the same local subscriber
     publish({channel, message}){
-        this.publisher.publish(channel, message);
+        this.subscriber.unsubscribe( channel , ()=>{
+
+            this.publisher.publish(channel, message, ()=>{
+
+                this.subscriber.subscribe(channel);
+            });
+        });
     }
 
 
     // 
     broadcastChain(){
-
         this.publish ({
-            channel : CHANNELS.BLOCKCHAIN,
+            channel: CHANNELS.BLOCKCHAIN,
             message: JSON.stringify(this.blockchain.chain)
-            
+
         })
     }
 
 }
 
 
-module.exports = PubSub
+module.exports = PubSub;
