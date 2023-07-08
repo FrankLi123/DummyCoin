@@ -26,8 +26,7 @@ class PubSub{
         this.subscribeToChannels();
 
 
-        //trigger the event
-
+        //Set up the Event Handler
         this.subscriber.on('message',  (channel, message) => this.handleMessage(channel, message));
     }
 
@@ -54,9 +53,15 @@ class PubSub{
         });
     }
 
-
+    // non consequential messages to the same local subscriber
     publish({channel, message}){
-        this.publisher.publish(channel, message);
+        this.subscriber.unsubscribe( channel , ()=>{
+
+            this.publisher.publish(channel, message, ()=>{
+
+                this.subscriber.subscribe(channel);
+            });
+        });
     }
 
 
