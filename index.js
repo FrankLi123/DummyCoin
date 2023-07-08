@@ -1,7 +1,7 @@
 const express = require('express');
-const Blockchain = require('./blockchain');
+const Blockchain = require('./blockchain/index');
 const bodyParser = require('body-parser');
-const PubSub = require('./pubsub');
+const PubSub = require('./app/pubsub');
 
 
 const app = express();
@@ -70,6 +70,11 @@ if(process.env.GENERATE_PEER_PORT === 'true'){
 }
 
 const PORT = PEER_PORT || DEFAULT_PORT;
-app.listen(PORT, () =>  
-  console.log(`listening at localhost:${PORT}`)   );
-  syncChains();
+app.listen(PORT, () =>  {
+  console.log(`listening at localhost:${PORT}`);
+  
+  
+  if( PORT !== DEFAULT_PORT){
+    syncChains();
+  }
+});

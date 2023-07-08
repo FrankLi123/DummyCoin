@@ -1,6 +1,5 @@
-
+const hexToBinary = require('hex-to-binary');
 const crypto = require('crypto');
-
 const cryptoHash = (...inputs) =>{
 
 
@@ -10,8 +9,8 @@ const cryptoHash = (...inputs) =>{
 
     hash.update(inputs.sort().join(' '));
 
-    return hash.digest('hex'); // display as 'hex' value
-
+    // return hexToBinary(hash.digest('hex')); // display as 'hex' value
+    return (hash.digest('hex'));
 };
 
 
