@@ -91,7 +91,7 @@ describe('Transaction', () => {
         beforeEach(() => {
 
             errorMock = jest.fn();
-            global.console.error = errorMork;
+            global.console.error = errorMock;
         });
 
 
