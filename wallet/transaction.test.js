@@ -7,9 +7,7 @@ describe('Transaction', () => {
 
     let transaction;
 
-
     let senderWallet;
-
 
     let recipient;
 
@@ -46,7 +44,6 @@ describe('Transaction', () => {
 
 
     });
-
 
 
     describe('input', ()=>{
@@ -104,7 +101,6 @@ describe('Transaction', () => {
 
         describe('when transaction is invalid', () =>{
 
-
             describe( 'a transaction outputMap value is invalid', ()=> {
 
                 it('returns false and logs error ', () =>{
@@ -114,6 +110,7 @@ describe('Transaction', () => {
                         expect(errorMock).toHaveBeenCalled();
                 });
             });
+
             describe( 'the transaction input signature is invalid', ()=> {
                 it('returns false and logs error', () =>{
 
@@ -127,4 +124,55 @@ describe('Transaction', () => {
         });
 
     });
+
+
+    describe('update()', ()=>{
+
+        let originalSignature;
+        let originalSenderOutput;
+
+        let nextRecipient;
+        let nextAmount;
+
+        beforeEach(() => {
+
+            originalSignature = transaction.input.signature;
+            originalSenderOutput = transaction.outputMap[senderWallet.publicKey];
+            nextRecipient = 'next-recipient'; // recipient's public key
+            nextAmount = 50; 
+
+
+            // Call the update() function
+            transaction.update({
+                senderWallet,
+                recipient: nextRecipient,
+                amount: nextAmount
+            });
+        });
+
+        it('outputs the amount to the next recipient', ()=>{
+
+            expect(transaction.outputMap[nextRecipient]).toEqual(nextAmount);
+
+        });
+
+        it('subtracts the amount from the original sender output amount', () =>{
+
+            expect(transaction.outputMap[senderWallet.publicKey]).toEqual(originalSenderOutput - nextAmount);
+
+        });
+
+        it('maintains a total output that matches the input amount', () =>{
+
+            expect(Object.values(transaction.outputMap).reduce((total, outputAmount) => total + outputAmount)).toEqual(transaction.input.amount);
+
+        });
+
+        it('re-signs the transaction', () =>{
+
+            expect(transaction.input.signature).not.toEqual(originalSignature);
+        
+        });
+    });
+
 });
