@@ -100,7 +100,7 @@ describe('TransactionPool', () => {
 
             for(let i = 0 ; i< 5; i++){
 
-                const transacction = new Wallet().createTransaction({
+                const transaction = new Wallet().createTransaction({
                     recipient: 'foo', amount:20
                 });
 
