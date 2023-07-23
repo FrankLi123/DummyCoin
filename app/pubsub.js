@@ -39,9 +39,24 @@ class PubSub{
 
         const parsedMessage = JSON.parse(message);
 
+        // if( channel === CHANNELS.BLOCKCHAIN){
+        //     this.blockchain.replaceChain(parsedMessage);
+        // }
         // If receive a Blockchain message, then replace the chain if needed.
-        if( channel === CHANNELS.BLOCKCHAIN){
-            this.blockchain.replaceChain(parsedMessage);
+
+        switch(channel){
+            case  CHANNELS.BLOCKCHAIN:
+                this.blockchain.replaceChain(parsedMessage, ()=>{
+                    this.transactionPool.clearBlockchainTransactions({
+
+                        chain:parsedMessage
+                    });
+                });
+            case  CHANNELS.TRANSACTION:
+                this.transactionPool.setTransaction(parsedMessage);
+                break;
+            defualt:
+                return;
         }
 
 

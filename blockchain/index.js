@@ -69,7 +69,7 @@ class blockchain{
 
 /* Function to check whether the current blockchain needs to be relaced by the input chain
 */
-    replaceChain( chain ){
+    replaceChain( chain, OnSuccess ){
 
         if(chain.length <= this.chain.length){
 
@@ -83,8 +83,12 @@ class blockchain{
             return;
         }
 
-        this.chain = chain;
+        if(OnSuccess){
+            OnSuccess();
+        }
 
+        console.log("replace chain with" + chain);
+        this.chain = chain;
     };
 
 
