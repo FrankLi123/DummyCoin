@@ -1,6 +1,6 @@
 const { verifySignature } = require('../util');
 const Wallet = require('./index');
-
+const Blockchain = require('../blockchain')
 describe('Wallet', () => {
 
     let wallet;
@@ -64,6 +64,25 @@ describe('Wallet', () => {
     });
 
 
+    describe('calculateBalance()', ()=>{
 
+        let blockchain;
+
+        beforeEach(()=>{
+            blockchain = new Blockchain();
+        });
+
+        describe('and there are no outputs for the wallet', ()=>{
+
+            it('returns the `STARTING_BALANCE`', ()=>{
+                expect (
+                    Wallet.calculateBalance({
+                        chain: blockchain.chain,
+                        address: wallet.publicKey
+                    })
+                ).toEqual(STARTING_BALANCE);
+            });
+        });
+    });
 });
 
